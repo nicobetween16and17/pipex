@@ -36,7 +36,7 @@ char *get_path(char *cmd)
 		free(res);
 		res = ft_strjoin(paths[i], cmd_path);
 	}
-	free(cmd_path);
+	//free(cmd_path);
 	return (res);
 }
 
@@ -46,13 +46,12 @@ int main(int ac, char **av, char **env)
 	int		status;
 	int		edge[2];
 	char	*path;
-	char	*option[2];
+	char	**option;
 	int		files[2];
 	pid_t	pids[2];
 
 	files[0] = open(av[1], O_RDONLY);
 	files[1] = open(av[4], O_CREAT | O_RDWR, 0666);
-	option[1] = NULL;
 	if (ac != 5)
 		return (-1);
 
@@ -64,15 +63,14 @@ int main(int ac, char **av, char **env)
 	{
 		usleep(1000);
 		pids[0] = getpid();
-		path = get_path(av[2]);option[0] = av[2];
+		path = get_path(av[2]);
+		option = ft_split(av[2], ' ');
 		printf("path is %s cmd is %s\n", path, option[0]);
-
 		dup2(files[0], 0);
 		dup2(edge[1], 1);
 		close(edge[0]);
 		close(edge[1]);
 		execve(path, option, env);
-		return (0);
 	}
 	else if (pid > 0)
 	{
@@ -81,15 +79,16 @@ int main(int ac, char **av, char **env)
 			return (1);
 		else if (pid == 0)
 		{
+			//free(path);
 			usleep(1000);
-			option[0] = av[3];path = get_path(av[3]);printf("path is %s cmd is %s\n", path, option[0]);
+			option = ft_split(av[3], ' ');
+			path = get_path(av[3]);
+			printf("path is %s cmd is %s\n", path, option[0]);
 			pids[1] = getpid();
 			dup2(edge[0], 0);
 			dup2(files[1], 1);
 			close(edge[0]);
 			close(edge[1]);
-			free(path);
-
 
 			execve(path, option, env);
 		}
