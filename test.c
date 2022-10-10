@@ -21,3 +21,8 @@ int main(int ac, char **av, char **env)
 	printf("res = %s\n", cmd);
 
 }
+/*
+ * tant que i < nb_fils
+ * -si nb fils == 0
+ * --
+ */
